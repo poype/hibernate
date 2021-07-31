@@ -161,4 +161,27 @@ public class FirstTest {
          */
         transaction.commit();
     }
+
+    @Test
+    public void testDelete() {
+        // delete操作必须在事务中，否则不会执行
+        transaction = session.beginTransaction();
+
+        Customer customer = new Customer();
+
+        // delete操作是以primary key为条件的，即执行SQL：delete from CUSTOMERS where ID=?
+        customer.setId(3L);
+
+        // 傻逼的是hibernate要求not-null的字段必须有值，否则会抛异常，
+        // 其实生成的SQL语句根本就没用到下面3个field，但也要必须赋值，原因是在mapping文件中这三个字段都是not-null的
+        customer.setName("ABC");
+        customer.setEmail("sb@qq.com");
+        customer.setPassword("qwe123");
+
+        // delete语句必须要真能删除一条记录，如果删除了0条记录，那么会抛下面的异常
+        // javax.persistence.OptimisticLockException
+        session.delete(customer);
+
+        transaction.commit();
+    }
 }
