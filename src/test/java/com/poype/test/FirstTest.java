@@ -114,4 +114,51 @@ public class FirstTest {
         transaction.commit();
     }
 
+    @Test
+    public void testQueryOneCustomer() {
+        // 如果仅仅是查询数据，不要开启事务
+        transaction = session.beginTransaction();
+
+        /** 根据primary ID查询单个对象，会执行下面的SQL
+         *    select
+         *         customer0_.ID as ID1_0_0_,
+         *         customer0_.NAME as NAME2_0_0_,
+         *         customer0_.EMAIL as EMAIL3_0_0_,
+         *         customer0_.PASSWORD as PASSWORD4_0_0_,
+         *         customer0_.PHONE as PHONE5_0_0_,
+         *         customer0_.ADDRESS as ADDRESS6_0_0_,
+         *         customer0_.SEX as SEX7_0_0_,
+         *         customer0_.IS_MARRIED as IS_MARRI8_0_0_,
+         *         customer0_.DESCRIPTION as DESCRIPT9_0_0_,
+         *         customer0_.BIRTHDAY as BIRTHDA10_0_0_,
+         *         customer0_.REGISTERED_TIME as REGISTE11_0_0_
+         *     from
+         *         CUSTOMERS customer0_
+         *     where
+         *         customer0_.ID=?
+         */
+        Customer customer = session.get(Customer.class, 1L);
+        System.out.println(customer);
+
+        customer.setName("Jacky Ma2");
+        /** 同样的，只要在事务中修改了model对象的值，在transaction commit时都会同步回DB，及执行下面的SQL
+         *     update
+         *         CUSTOMERS
+         *     set
+         *         NAME=?,
+         *         EMAIL=?,
+         *         PASSWORD=?,
+         *         PHONE=?,
+         *         ADDRESS=?,
+         *         SEX=?,
+         *         IS_MARRIED=?,
+         *         DESCRIPTION=?,
+         *         BIRTHDAY=?,
+         *         REGISTERED_TIME=?
+         *     where
+         *         ID=?
+         * 把所有的field都update一次，效率太差！！！ 好傻逼！！！！
+         */
+        transaction.commit();
+    }
 }
