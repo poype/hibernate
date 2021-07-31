@@ -85,4 +85,33 @@ public class FirstTest {
             System.out.println("-----------------------------");
         }
     }
+
+    @Test
+    public void testQueryAllCustomerWithTransaction() {
+        // 开启事务
+        transaction = session.beginTransaction();
+
+        Query<Customer> query = session.createQuery("from Customer", Customer.class);
+        List<Customer> customers = query.list();
+
+        for (Customer customer : customers) {
+            System.out.println(customer);
+            System.out.println("-----------------------------");
+            // 此处修改了对象的值，仅仅是在内存中修改，并没有显示的声明要把修改的值同步回DB
+            customer.setName("Jack Ma");
+        }
+
+        /*
+         * 查询操作一般是只读操作，通常没有必要开启transaction，但如果开启transaction会发生奇妙的事情
+         * 在transaction中从DB查询domain model，之后在内存中修改domain model的值，那么在transaction commit时，
+         * 被修改后的model的值会自动同步回DB，即会执行下面的update SQL，本例中有多少个domain model就会执行几次update SQL
+         * update CUSTOMERS set NAME=?, EMAIL=?, PASSWORD=?, PHONE=?, EMAIL=?, PASSWORD=?, PHONE=?, ... where ID=?
+         *
+         * 注意update SQL要等到transaction commit时才会自动执行
+         * 另外可以看到执行的SQL是把customer对象的所有field都update了一次，但本例中只是更新的name字段，这很浪费DB性能。
+         * 应该寻找更好的方法更新DB
+         */
+        transaction.commit();
+    }
+
 }
