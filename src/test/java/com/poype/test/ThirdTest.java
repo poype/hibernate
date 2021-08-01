@@ -2,6 +2,7 @@ package com.poype.test;
 
 import com.poype.second.model.Address;
 import com.poype.second.model.Customer;
+import com.poype.second.model.Gender;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class ThirdTest {
         customer.setEmail("LiLei@qq.com");
         customer.setPassword("qqqq123");
         customer.setPhone(4246123);
-        customer.setSex('F');
+        customer.setSex(Gender.FEMALE);
         customer.setMarried(false);
         customer.setDescription("Beautiful");
         customer.setBirthday(new Date());

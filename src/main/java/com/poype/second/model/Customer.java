@@ -22,7 +22,7 @@ public class Customer implements Serializable {
 
     private Address address;
 
-    private char sex;
+    private Gender sex;
 
     private boolean married;
 
@@ -116,11 +116,15 @@ public class Customer implements Serializable {
         this.phone = phone;
     }
 
-    public char getSex() {
+    // 默认情况下，枚举类型的property会把其常量对应的序号存储到DB中(0, 1, 2这种)，这种数字很不容易记忆
+    // 如果想要存储枚举对应的字符串，用下面的annotation明确声明
+    @Enumerated(EnumType.STRING)
+    public Gender getSex() {
         return sex;
     }
 
-    public void setSex(char sex) {
+    @Enumerated(EnumType.STRING)
+    public void setSex(Gender sex) {
         this.sex = sex;
     }
 
