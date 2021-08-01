@@ -1,21 +1,52 @@
 package com.poype.first.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
+@Entity
+@Table(name = "CUSTOMERS")
 public class Customer implements Serializable {
+    @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
+    @Column(name="ID")
     private Long id;
+
+    @Basic(optional=false)
+    @Column(name="NAME", length=15)
     private String name;
+
+    @Basic(optional=false)
+    @Column(name="EMAIL", length=128)
     private String email;
+
+    @Basic(optional=false)
+    @Column(name="PASSWORD", length=8)
     private String password;
+
+    @Column(name="PHONE")
     private int phone;
+
+    @Column(name="ADDRESS",length=255)
     private String address;
+
+    @Column(name="SEX")
     private char sex;
+
+    @Column(name="IS_MARRIED")
     private boolean married;
+
+    @Column(name="DESCRIPTION")
     private String description;
+
+    @Column(name="BIRTHDAY")
     private Date birthday;
-    private Timestamp registeredTime;
+
+    @Column(name="REGISTERED_TIME")
+    private Date registeredTime;
 
     public Customer() {
     }
@@ -117,11 +148,11 @@ public class Customer implements Serializable {
         this.birthday = birthday;
     }
 
-    public Timestamp getRegisteredTime() {
+    public Date getRegisteredTime() {
         return registeredTime;
     }
 
-    public void setRegisteredTime(Timestamp registeredTime) {
+    public void setRegisteredTime(Date registeredTime) {
         this.registeredTime = registeredTime;
     }
 }
