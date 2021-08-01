@@ -62,5 +62,34 @@ public class ThirdTest {
         }
     }
 
+    @Test
+    public void testCache() {
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin(); // 要明确调用begin方法才能开启事务
+
+        // 1. 第一次读取model对象，缓存中没有，会向DB发送SQL
+        Customer customer = entityManager.find(Customer.class, 14L);
+        System.out.println(customer);
+
+        // 2. 第二次从缓存中直接读取对象，不会向DB发送SQL
+        Customer customer1 = entityManager.find(Customer.class, 14L);
+        System.out.println("-----------------------");
+
+        // 4. 由于对象没有任何变化，所以flush操作不会向DB发送任何SQL。且flush对缓存没有任何影响，下面的find操作仍然没有向DB发送SQL
+        entityManager.flush();
+        Customer customer2 = entityManager.find(Customer.class, 14L);
+        System.out.println("-----------------------");
+
+        // 5. 提交事务，对缓存也没有任何影响，缓存中的数据还在，所以下面find操作仍然不会向DB发送SQL
+        transaction.commit();
+        Customer customer3 = entityManager.find(Customer.class, 14L);
+        System.out.println("end ---------------------");
+
+        // 6. refresh操作会强制从DB重新读取一次最新的数据
+        entityManager.refresh(customer);
+
+        // 7. entityManager.close() 执行这个操作后缓存会被真正清空
+    }
+
 }
 
