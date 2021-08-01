@@ -8,6 +8,7 @@
         </provider>
 
         <class>com.poype.first.model.Customer</class>
+        <class>com.poype.first.model.Order</class>
 
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>

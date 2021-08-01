@@ -1,6 +1,7 @@
 package com.poype.test;
 
 import com.poype.first.model.Customer;
+import com.poype.first.model.Order;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,5 +115,30 @@ public class SecondTest {
         entityManager.remove(customer);
 
         transaction.commit();
+    }
+
+    @Test
+    public void testSaveOrder() {
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin(); // 要明确调用begin方法才能开启事务
+
+        Order order = new Order();
+        order.setOrderNumber("123-456");
+        order.setPrice(33.44);
+
+        entityManager.persist(order);
+
+        transaction.commit();
+    }
+
+    @Test
+    public void testQueryAllOrder() {
+        Query query = entityManager.createQuery("from Order");
+        List<Order> orders = query.getResultList();
+
+        for (Order order : orders) {
+            System.out.println(order);
+            System.out.println("-----------------------------");
+        }
     }
 }
