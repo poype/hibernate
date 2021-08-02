@@ -90,6 +90,14 @@ public class ThirdTest {
 
         // 7. entityManager.close() 执行这个操作后缓存会被真正清空
     }
-
 }
 
+/*
+ * transient(短暂的)：一个对象被new出来后还没有被持久化，就是个普通对象
+ * persistent: 在Hibernate缓存和DB中都存在的对象处于persistent状态
+ *             例如将一个处于transient状态的对象save到DB中后该对象就会转变到persistent状态。
+ *             或者find等操作从DB中去取一个对象也是persistent状态。
+ *             在清理Hibernate缓存时，会根据persistent对象的属性变化来同步更新DB。
+ * removed: 不再处于Hibernate缓存，并且session已经计划将其从DB中删除。(调用remove操作后会直接清空缓存，但要等到事务commit时才会真正操作DB)
+ * detached: 对象数据存在于DB中，但不存在于Hibernate缓存中。即调用了entityManager.close()方法，对象不再受entityManager控制
+ */
