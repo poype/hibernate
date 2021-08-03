@@ -2,6 +2,8 @@ package com.poype.springdata.repository;
 
 import com.poype.springdata.model.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -24,4 +26,29 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 
     // WHERE email IN (?, ?, ?) OR birth < ?
     List<Person> getByEmailInAndBirthLessThan(List<String> emails, Date birth);
+
+    //查询 id 值最大的那个 Person
+    //使用 @Query 注解可以自定义 JPQL 语句以实现更灵活的查询
+    @Query("SELECT p FROM Person p WHERE p.id = (SELECT max(p2.id) FROM Person p2)")
+    Person getMaxIdPerson();
+
+    //为 @Query 注解传递参数的方式1: 使用占位符.
+    @Query("SELECT p FROM Person p WHERE p.lastName = ?1 AND p.email = ?2")
+    List<Person> testQueryAnnotationParams1(String lastName, String email);
+
+    //为 @Query 注解传递参数的方式1: 命名参数的方式.
+    @Query("SELECT p FROM Person p WHERE p.lastName = :lastName AND p.email = :email")
+    List<Person> testQueryAnnotationParams2(@Param("email") String email, @Param("lastName") String lastName);
+
+    //SpringData 允许在占位符上添加 %%.
+    @Query("SELECT p FROM Person p WHERE p.lastName LIKE %?1% OR p.email LIKE %?2%")
+    List<Person> testQueryAnnotationLikeParam(String lastName, String email);
+
+    //SpringData 允许在占位符上添加 %%.
+    @Query("SELECT p FROM Person p WHERE p.lastName LIKE %:lastName% OR p.email LIKE %:email%")
+    List<Person> testQueryAnnotationLikeParam2(@Param("email") String email, @Param("lastName") String lastName);
+
+    //设置 nativeQuery=true 即可以使用原生的 SQL 查询
+    @Query(value="SELECT count(id) FROM persons", nativeQuery=true)
+    long getTotalCount();
 }

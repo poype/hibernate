@@ -57,4 +57,16 @@ public class SpringDataTest {
         List<Person> personList = personRepository.getByEmailInAndBirthLessThan(Arrays.asList("EE@qq.com", "GG@qq.com"), new Date());
         System.out.println(personList);
     }
+
+    @Test
+    public void test4() {
+        Person person = personRepository.getMaxIdPerson();
+        System.out.println(person);
+    }
+
+    @Test
+    public void test5() {
+        long count = personRepository.getTotalCount();
+        System.out.println(count);
+    }
 }
