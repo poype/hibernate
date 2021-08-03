@@ -6,7 +6,9 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class SpringDataTest {
 
@@ -36,5 +38,23 @@ public class SpringDataTest {
             person.setEmail(name + "@qq.com");
             personRepository.save(person);
         }
+    }
+
+    @Test
+    public void test1() {
+        List<Person> personList = personRepository.findByLastNameStartingWithAndIdLessThan("a", 10);
+        System.out.println(personList);
+    }
+
+    @Test
+    public void test2() {
+        List<Person> personList = personRepository.readByLastNameEndingWithAndIdLessThan("F", 2);
+        System.out.println(personList);
+    }
+
+    @Test
+    public void test3() {
+        List<Person> personList = personRepository.getByEmailInAndBirthLessThan(Arrays.asList("EE@qq.com", "GG@qq.com"), new Date());
+        System.out.println(personList);
     }
 }
