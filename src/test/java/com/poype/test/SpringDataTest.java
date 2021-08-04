@@ -6,6 +6,11 @@ import com.poype.springdata.service.PersonService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -77,5 +82,37 @@ public class SpringDataTest {
     @Test
     public void test6() {
         personService.updatePersonEmail("test@qqqqq.com", 3);
+    }
+
+    /**
+     * 分别执行了如下两条SQL
+     * select
+     *    person0_.id as id1_0_,
+     *    person0_.birth as birth2_0_,
+     *    person0_.email as email3_0_,
+     *    person0_.firstName as firstNam4_0_,
+     *    person0_.lastName as lastName5_0_
+     * from
+     *    PERSONS person0_ limit ?, ?
+     *
+     * select
+     *    count(person0_.id) as col_0_0_
+     * from
+     *    PERSONS person0_
+     */
+    @Test
+    public void testPagingAndSortingRespository(){
+        // pageNo 从 0 开始.
+        int pageNo = 3 - 1;
+        int pageSize = 3;
+
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<Person> page = personRepository.findAll(pageRequest);
+
+        System.out.println("总记录数: " + page.getTotalElements());
+        System.out.println("当前第几页: " + (page.getNumber() + 1));
+        System.out.println("总页数: " + page.getTotalPages());
+        System.out.println("当前页面的 List: " + page.getContent());
+        System.out.println("当前页面的记录数: " + page.getNumberOfElements());
     }
 }
