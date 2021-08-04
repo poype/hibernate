@@ -2,6 +2,7 @@ package com.poype.test;
 
 import com.poype.springdata.model.Person;
 import com.poype.springdata.repository.PersonRepository;
+import com.poype.springdata.service.PersonService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -16,9 +17,12 @@ public class SpringDataTest {
 
     private PersonRepository personRepository;
 
+    private PersonService personService;
+
     {
         ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         personRepository = ctx.getBean(PersonRepository.class);
+        personService = ctx.getBean(PersonService.class);
     }
 
     @Test
@@ -68,5 +72,10 @@ public class SpringDataTest {
     public void test5() {
         long count = personRepository.getTotalCount();
         System.out.println(count);
+    }
+
+    @Test
+    public void test6() {
+        personService.updatePersonEmail("test@qqqqq.com", 3);
     }
 }

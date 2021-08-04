@@ -2,6 +2,7 @@ package com.poype.springdata.repository;
 
 import com.poype.springdata.model.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -51,4 +52,13 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     //设置 nativeQuery=true 即可以使用原生的 SQL 查询
     @Query(value="SELECT count(id) FROM persons", nativeQuery=true)
     long getTotalCount();
+
+    // 可以通过自定义的 JPQL 完成 UPDATE 和 DELETE 操作. 但是 JPQL 不支持 INSERT 操作
+    // 在 @Query 注解中编写 JPQL 语句, 但必须使用 @Modifying 进行修饰. 以通知 SpringData, 这是一个 UPDATE 或 DELETE 操作
+    // UPDATE 或 DELETE 操作必须在事务中
+    // 默认情况下, SpringData 的每个方法上有事务, 但都是一个只读事务. 他们不能完成修改操作!
+    // 这里方法的返回值是update记录的数量，如果没有任何一条记录被update就返回0
+    @Modifying
+    @Query("UPDATE Person p SET p.email = :email WHERE p.id = :id")
+    int updatePersonEmail(@Param("id") Integer id, @Param("email") String email);
 }
